@@ -123,6 +123,10 @@ then
     GITHUB_REPOSITORY GITHUB_RUN_ID GITHUB_SHA GITHUB_HEAD_REF GITHUB_BASE_REF GITHUB_REF
     # TODO: remove the below after a few days
     GITHUB_ACTIONS_HOMEBREW_MACOS_SELF_HOSTED
+    # NOTE: ipatch, exp with new env vars
+    SDKROOT
+    MACOSX_DEPLOYMENT_TARGET
+
   )
   # Filter all but the specific variables.
   for VAR in "${ENV_VAR_NAMES[@]}" "${!HOMEBREW_@}"

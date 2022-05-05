@@ -1513,7 +1513,11 @@ class Formula
     args << "-DHAVE_CLOCK_GETTIME:INTERNAL=0" if MacOS.version == "10.11" && MacOS::Xcode.version >= "8.0"
 
     # Ensure CMake is using the same SDK we are using.
-    args << "-DCMAKE_OSX_SYSROOT=#{MacOS.sdk_for_formula(self).path}" if MacOS.sdk_root_needed?
+    # args << "-DCMAKE_OSX_SYSROOT=#{MacOS.sdk_for_formula(self).path}" if MacOS.sdk_root_needed?
+
+    # NOTE: ipatch add custom env vars for brew build install process
+    args << "-DCMAKE_OSX_SYSROOT=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.14.sdk"
+    args << "MACOSX_DEPLOYMENT_TARGET=10.14"
 
     args
   end
