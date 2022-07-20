@@ -1497,6 +1497,10 @@ class Formula
       find_framework: String,
     ).returns(T::Array[String])
   }
+
+  # NOTE: ipatch, makde building with debug symbols standard
+  # NOTE: ipatch, set min macos target for all builds to 10.14 SDK
+
   def std_cmake_args(install_prefix: prefix, install_libdir: "lib", find_framework: "LAST")
     args = %W[
       -DCMAKE_INSTALL_PREFIX=#{install_prefix}
