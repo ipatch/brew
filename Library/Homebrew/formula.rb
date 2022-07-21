@@ -1502,13 +1502,17 @@ class Formula
   # NOTE: ipatch, set min macos target for all builds to 10.14 SDK
 
   # NOTE: ipatch, ideally setting a env var for a specific os deployment target would be more robust
+  #
+  # NOTE: ipatch, need to figure out way to manage std install and dbg installs
+  #
+  # NOTE: ref, https://cmake.org/cmake/help/latest/variable/CMAKE_OSX_DEPLOYMENT_TARGET.html
 
   def std_cmake_args(install_prefix: prefix, install_libdir: "lib", find_framework: "LAST")
     args = %W[
       -DCMAKE_INSTALL_PREFIX=#{install_prefix}
       -DCMAKE_INSTALL_LIBDIR=#{install_libdir}
       -DCMAKE_BUILD_TYPE=Debug
-      -DMACOSX_DEPLOYMENT_TARGET="10.14"
+      -DCMAKE_OSX_DEPLOYMENT_TARGET="10.14"
       -DCMAKE_FIND_FRAMEWORK=#{find_framework}
       -DCMAKE_VERBOSE_MAKEFILE=ON
       -Wno-dev
