@@ -77,7 +77,8 @@ module OS
 
         # Use unversioned SDK only if we don't have one matching that version.
         sdk_path = Pathname.new("#{sdk_prefix}/MacOSX.sdk")
-        if (version = read_sdk_version(sdk_path)) && found_versions.exclude?(version)
+        # NOTE: ipatch, attempt to avoid exclude
+        if (version = read_sdk_version(sdk_path)) # && found_versions.exclude?(version)
           @all_sdks << SDK.new(version, sdk_path, source)
         end
 
