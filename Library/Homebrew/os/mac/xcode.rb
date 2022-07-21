@@ -61,7 +61,8 @@ module OS
       def below_minimum_version?
         return false unless installed?
 
-        version < minimum_version
+        # NOTE: ipatch, attempt to allow a lower min version
+        # version < minimum_version
       end
 
       sig { returns(T::Boolean) }
