@@ -1506,6 +1506,8 @@ class Formula
   # NOTE: ipatch, need to figure out way to manage std install and dbg installs
   #
   # NOTE: ref, https://cmake.org/cmake/help/latest/variable/CMAKE_OSX_DEPLOYMENT_TARGET.html
+  #
+  # create an env var HOMEBREW_CMAKE_DEPLOYMENT_TARGET, HOMEBREW_CMAKE_BUILD_TYPE
 
   def std_cmake_args(install_prefix: prefix, install_libdir: "lib", find_framework: "LAST")
     args = %W[
