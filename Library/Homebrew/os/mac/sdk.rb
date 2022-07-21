@@ -15,7 +15,6 @@ module OS
       # NOTE: ipatch, i want to use my defined SDK ie. 10.14 and not the default 11.x
       # super hack, attempt to only match 10.14 sdk to avoid other sdks in path
       VERSIONED_SDK_REGEX = /MacOSX(10\.14)\.sdk$/.freeze
-
       # VERSIONED_SDK_REGEX = /MacOSX(10\.\d+|\d+)\.sdk$/.freeze # default upstream
 
       sig { returns(OS::Mac::Version) }
