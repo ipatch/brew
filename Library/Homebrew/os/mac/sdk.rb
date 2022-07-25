@@ -3,6 +3,8 @@
 
 require "os/mac/version"
 
+require "pry"
+
 module OS
   module Mac
     # Class representing a macOS SDK.
@@ -10,6 +12,8 @@ module OS
     # @api private
     class SDK
       extend T::Sig
+
+      binding.pry
 
       # 11.x SDKs are explicitly excluded - we want the MacOSX11.sdk symlink instead.
       # NOTE: ipatch, i want to use my defined SDK ie. 10.14 and not the default 11.x
