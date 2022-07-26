@@ -25,6 +25,10 @@ module OS
       sig { returns(Pathname) }
       attr_reader :path
 
+
+      sig { returns(Pathname) }
+      attr_reader :path
+
       sig { returns(Symbol) }
       attr_reader :source
 

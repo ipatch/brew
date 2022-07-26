@@ -1,6 +1,8 @@
 # typed: false
 # frozen_string_literal: true
 
+require "pry"
+
 if ENV["HOMEBREW_STACKPROF"]
   require "stackprof"
   StackProf.start(mode: :wall, raw: true)
