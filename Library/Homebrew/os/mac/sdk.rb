@@ -3,6 +3,9 @@
 
 require "os/mac/version"
 
+# to load pry without issues, run `brew vendor-gems`
+require "pry"
+
 module OS
   module Mac
     # Class representing a macOS SDK.
@@ -10,6 +13,8 @@ module OS
     # @api private
     class SDK
       extend T::Sig
+
+      # binding.pry
 
       # 11.x SDKs are explicitly excluded - we want the MacOSX11.sdk symlink instead.
       VERSIONED_SDK_REGEX = /MacOSX(10\.\d+|\d+)\.sdk$/.freeze
@@ -73,7 +78,8 @@ module OS
 
         # Use unversioned SDK only if we don't have one matching that version.
         sdk_path = Pathname.new("#{sdk_prefix}/MacOSX.sdk")
-        if (version = read_sdk_version(sdk_path)) && found_versions.exclude?(version)
+        # NOTE: ipatch, attempt to avoid exclude
+        if (version = read_sdk_version(sdk_path)) # && found_versions.exclude?(version)
           @all_sdks << SDK.new(version, sdk_path, source)
         end
 
