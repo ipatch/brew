@@ -1772,6 +1772,7 @@ class Formula
       -DCMAKE_PROJECT_TOP_LEVEL_INCLUDES=#{HOMEBREW_LIBRARY_PATH}/cmake/trap_fetchcontent_provider.cmake
       -Wno-dev
       -DBUILD_TESTING=OFF
+      -DCMAKE_BUILD_PARALLEL_LEVEL=#{ENV.make_jobs}
     ]
   end
 
