@@ -333,6 +333,10 @@ module Homebrew
         default_text: 'The "Beer Mug" emoji.',
         default:      "🍺",
       },
+      HOMEBREW_KEEP_TMP:                         {
+        description: "keep all build files & artifacts when build formula from source",
+        boolean:    true,
+      },
       HOMEBREW_LIVECHECK_AUTOBUMP:               {
         description: "If set, `brew livecheck` will include data for packages that are autobumped by BrewTestBot.",
         boolean:     true,
