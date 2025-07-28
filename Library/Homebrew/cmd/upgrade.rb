@@ -227,20 +227,34 @@ module Homebrew
 
         Install.perform_preinstall_checks_once
 
-        formulae_installer = Upgrade.formula_installers(
-          formulae_to_install,
+        # Get the value of HOMEBREW_KEEP_TMP from your environment config
+        # This is the idiomatic Homebrew way since you defined it as a boolean.
+        keep_tmp_from_env = Homebrew::EnvConfig.keep_tmp?
+
+        # Create a hash of options, prioritizing args.keep_tmp? if explicitly set
+        # This ensures that if the user explicitly uses --keep-tmp on the command line,
+        # that takes precedence over the environment variable.
+        options = {
           flags:                      args.flags_only,
           dry_run:                    args.dry_run?,
           force_bottle:               args.force_bottle?,
           build_from_source_formulae: args.build_from_source_formulae,
           interactive:                args.interactive?,
-          keep_tmp:                   args.keep_tmp?,
           debug_symbols:              args.debug_symbols?,
           force:                      args.force?,
           overwrite:                  args.overwrite?,
           debug:                      args.debug?,
           quiet:                      args.quiet?,
           verbose:                    args.verbose?,
+        }
+
+        # Apply --keep-tmp from environment variable if not already set by command-line arg
+        # Use `args.keep_tmp?` to check if the user explicitly provided the flag.
+        options[:keep_tmp] = args.keep_tmp? || keep_tmp_from_env
+
+        formulae_installer = Upgrade.formula_installers(
+          formulae_to_install,
+          **options # Use the modified options hash
         )
 
         return false if formulae_installer.blank?
