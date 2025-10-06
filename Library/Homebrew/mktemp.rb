@@ -13,14 +13,25 @@ class Mktemp
   sig { returns(T.nilable(Pathname)) }
   attr_reader :tmpdir
 
-  sig { params(prefix: String, retain: T::Boolean, retain_in_cache: T::Boolean).void }
-  def initialize(prefix, retain: false, retain_in_cache: false)
+  sig { params(prefix: String, retain: T::Boolean, retain_in_cache: T::Boolean, version: T.nilable(String)).void }
+  def initialize(prefix, retain: false, retain_in_cache: false, version: nil)
     @prefix = prefix
+    @version = T.let(version, T.nilable(String))
     @retain_in_cache = T.let(retain_in_cache, T::Boolean)
     @retain = T.let(retain || @retain_in_cache, T::Boolean)
     @quiet = T.let(false, T::Boolean)
     @tmpdir = T.let(nil, T.nilable(Pathname))
   end
+
+  # NOTE: ipatch, original version
+  # sig { params(prefix: String, retain: T::Boolean, retain_in_cache: T::Boolean).void }
+  # def initialize(prefix, retain: false, retain_in_cache: false)
+  #   @prefix = prefix
+  #   @retain_in_cache = T.let(retain_in_cache, T::Boolean)
+  #   @retain = T.let(retain || @retain_in_cache, T::Boolean)
+  #   @quiet = T.let(false, T::Boolean)
+  #   @tmpdir = T.let(nil, T.nilable(Pathname))
+  # end
 
   # Instructs this {Mktemp} to retain the staged files.
   sig { void }
@@ -54,6 +65,16 @@ class Mktemp
   sig { params(chdir: T::Boolean, _block: T.proc.params(arg0: Mktemp).void).void }
   def run(chdir: true, &_block)
     prefix_name = @prefix.tr "@", "AT"
+
+    # NOTE: ipatch, NEW!
+    # Add version to the tmpdir name if available
+    if @version && Homebrew::EnvConfig.use_tmp?
+      version_safe = @version.to_s.tr(".", "_")
+      tmpdir_prefix = "#{prefix_name}-#{version_safe}-"
+    else
+      tmpdir_prefix = "#{prefix_name}-"
+    end
+
     @tmpdir = if retain_in_cache?
       tmp_dir = HOMEBREW_CACHE/"Sources/#{prefix_name}"
       chmod_rm_rf(tmp_dir) # clear out previous staging directory
