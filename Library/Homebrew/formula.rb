@@ -3235,7 +3235,9 @@ class Formula
     ).void
   }
   def mktemp(prefix = name, retain: false, retain_in_cache: false, &block)
-    Mktemp.new(prefix, retain:, retain_in_cache:).run(&block)
+    # NOTE: ipatch, pass version to mktemp if available
+    version_str = respond_to?(:version) ? version&.to_s : nil
+    Mktemp.new(prefix, retain:, retain_in_cache:, version: version_str).run(&block)
   end
 
   # A version of `FileUtils.mkdir` that also changes to that folder in

@@ -230,7 +230,9 @@ class Resource
   protected
 
   def stage_resource(prefix, debug_symbols: false, &block)
-    Mktemp.new(prefix, retain_in_cache: debug_symbols).run(&block)
+    # NOTE: ipatch, pass version to mktemp if available and HOMEBREW_USE_TMP is enabled
+    version_str = respond_to?(:version) ? version&.to_s : nil
+    Mktemp.new(prefix, retain_in_cache: debug_symbols, version: version_str).run(&block)
   end
 
   private
