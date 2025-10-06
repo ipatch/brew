@@ -124,6 +124,35 @@ module Homebrew
         named_args [:installed_formula, :installed_cask]
       end
 
+      # NOTE: ipatch, add class method to find existing tmp dirs
+      def self.find_existing_tmp_dir(formula)
+        return nil unless Homebrew::EnvConfig.use_tmp?
+
+        tmp_base = ENV.fetch("HOMEBREW_TEMP", HOMEBREW_TEMP)
+        return nil unless tmp_base && Dir.exist?(tmp_base)
+
+        # Build pattern: formulaname-version-*
+        # Example: opensslA3-3_6_0-20251002-868155-ylwkxi
+        formula_name_safe = formula.name.tr("@", "AT")
+        version_safe = formula.version.to_s.tr(".", "_")
+
+        # Look for matching formula name and version
+        formula_tmp_pattern = "#{formula_name_safe}-#{version_safe}-*"
+
+          matching_dirs = Dir.glob(File.join(tmp_base, formula_tmp_pattern))
+          .select { |d| File.directory?(d) }
+          .sort_by { |d| File.mtime(d) }
+          .reverse # Most recent first
+
+        existing = matching_dirs.first
+
+        if existing
+          ohai "Found existing tmp dir for #{formula.name} v#{formula.version}: #{File.basename(existing)}"
+        end
+
+        existing
+      end
+
       sig { override.void }
       def run
         if args.build_from_source? && args.named.empty?
@@ -251,6 +280,20 @@ module Homebrew
         # Apply --keep-tmp from environment variable if not already set by command-line arg
         # Use `args.keep_tmp?` to check if the user explicitly provided the flag.
         options[:keep_tmp] = args.keep_tmp? || keep_tmp_from_env
+
+        # NOTE: ipatch, check for existing tmp directories to reuse
+        if Homebrew::EnvConfig.use_tmp?
+          ohai "Checking for existing tmp directories to reuse..."
+          formulae_to_install.each do |formula|
+            existing_tmp = Upgrade.find_existing_tmp_dir(formula)
+            if existing_tmp
+              # You could store this to skip download/extract later
+              # This is informational for now
+            else
+              opoo "No existing tmp directory found for #{formula.name} v#{formula.version}"
+            end
+          end
+        end
 
         formulae_installer = Upgrade.formula_installers(
           formulae_to_install,
