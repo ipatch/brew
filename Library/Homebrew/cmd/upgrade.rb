@@ -285,7 +285,11 @@ module Homebrew
         if Homebrew::EnvConfig.use_tmp?
           ohai "Checking for existing tmp directories to reuse..."
           formulae_to_install.each do |formula|
-            existing_tmp = Upgrade.find_existing_tmp_dir(formula)
+
+            # NOTE: ipatch, 2 different ways to do the same thing, prefer the later
+            # existing_tmp = UpgradeCmd.find_existing_tmp_dir(formula)
+            existing_tmp = self.class.find_existing_tmp_dir(formula)
+
             if existing_tmp
               # You could store this to skip download/extract later
               # This is informational for now
